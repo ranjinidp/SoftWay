@@ -1,5 +1,6 @@
 package softway.sw;
 
+import java.time.Duration;
 import java.util.Set;
 
 import org.openqa.selenium.By;
@@ -17,16 +18,24 @@ public class FlipKartDemo {
 		
 		WebDriverManager.chromedriver().setup();
 		WebDriver driver =new ChromeDriver();
+		//Open https://www.flipkart.com/
 		driver.get("https://www.flipkart.com/");
+		
 		driver.manage().window().maximize();
+		
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		
 		driver.findElement(By.xpath("//button[text()='✕']")).click();
+		
+		//Search for the product you like(Any phones)
 		WebElement clickOnSearchBox = driver.findElement(By.name("q"));
 		clickOnSearchBox.click();
 		clickOnSearchBox.sendKeys("iphone");
 		driver.findElement(By.xpath("//button[@type='submit']")).click();
-		Thread.sleep(2000);
+		
+		//Click on the first item from the list
 		driver.findElement(By.xpath("//div[text()='APPLE iPhone 11 (White, 64 GB)']")).click();
-		Thread.sleep(2000);
+		//Thread.sleep(2000);
 		 //Get handles of the windows
         //String mainWindowHandle = driver.getWindowHandle();
         Set<String> allWindowHandles = driver.getWindowHandles();
@@ -35,11 +44,13 @@ public class FlipKartDemo {
 			
 		}
         String price = driver.findElement(By.xpath("(//div[contains(.,'₹')])[12]")).getText();
+        
+        //Print the price of the item
 		System.out.println(price);
+		
+		//Add to cart in guest mode
 		driver.findElement(By.xpath("//button[text()='ADD TO CART']")).click();
-		Thread.sleep(2000);
-		//driver.findElement(By.xpath("//span[text()='Cart']")).click();	
-		//Thread.sleep(2000);
+
 		String ExpectedTitle = "Shopping Cart | Flipkart.com";
 		String ActualTitle = driver.getTitle();
 		String WindowHandle = driver.getWindowHandle();
@@ -47,23 +58,25 @@ public class FlipKartDemo {
 		Thread.sleep(2000);
 
 				if(ActualTitle.equals(ExpectedTitle)) {
+					//Go to the cart page
 					driver.switchTo().window(WindowHandle);
 				}
 
-
-		//WebElement Element = driver.findElement(By.xpath("//button[text()='+']"));
-		
-		
+		WebElement Element = driver.findElement(By.xpath("//button[text()='+']"));		
 		
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		//js.executeScript("arguments[0].scrollIntoView();", Element);
-		js.executeScript("window.scrollBy(0,2000)");
+		js.executeScript("arguments[0].scrollIntoView();", Element);
+		//js.executeScript("window.scrollBy(0,2000)");
+		
+		//Increase the quantity by 1
 		driver.findElement(By.xpath("//button[text()='+']")).click();
 		Thread.sleep(3000);
 		String msg = driver.findElement(By.xpath("(//div[text()='Total Amount']/../..//span)[1]")).getText();
+		
+		//Print the price after addition of quantity
 		System.out.println(msg);
 
-		 driver.quit();
+		driver.quit();
 		 
 
 		
